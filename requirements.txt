@@ -1,0 +1,3 @@
+aiogram
+# togetherai
+# python-dotenv

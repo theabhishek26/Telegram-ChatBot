@@ -1,0 +1,86 @@
+from dotenv import load_dotenv
+import os
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+from together import Together
+import logging
+import asyncio
+from aiogram import Router
+
+router = Router()
+client = Together() 
+
+load_dotenv()
+TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+class Reference:
+    '''
+    A class to store previous response from togetherai.
+    '''
+    def __init__(self) -> None:
+        self.response = ""  # Changed from self.reference to self.response
+
+reference = Reference()
+model_name = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+
+# Initialize bot and dispatcher
+bot = Bot(token=TELEGRAM_BOT_TOKEN)
+dp = Dispatcher()
+
+def clear_past():
+    """
+    This function clears the past conversation history.
+    """
+    reference.response = ""  # Changed from reference.reference to reference.response
+
+@router.message(Command("clear"))
+async def clear(message: types.Message):
+    """Handles to clear past conversations and context."""
+    clear_past()
+    await message.reply("I have cleared the past conversation history. You can start a new conversation now.")
+
+@router.message(Command("start"))
+async def command_start_handler(message: types.Message):
+    """Handles the /start command."""
+    await message.reply("Hello! I'm your Tele bot, created by Freecoil. How can I assist you?")
+
+@router.message(Command("help"))
+async def helper(message: types.Message):
+    """Handles the /help command."""
+    help_command = """
+    Hi there! I'm your Tele bot, created by Freecoil. Here are some commands you can use:
+    /start - Start the bot and get a welcome message.
+    /clear - Clear the conversation history.
+    /help - Get help on how to use the bot.
+    I hope this helps! If you have any questions, feel free to ask.
+    """
+    await message.reply(help_command)
+
+@router.message()
+async def chat(message: types.Message):
+    """Handler that takes user input and returns the response from togetherai."""
+    # print(f">>>USER:\n\t{message.text}")
+    
+    try:
+        response = client.chat.completions.create(
+            model=model_name,  # Use the variable instead of string "model_name"
+            messages=[
+                {"role": "assistant", "content": reference.response},  # Fixed typo "assistent" to "assistant"
+                {"role": "user", "content": message.text},
+            ],
+        )
+        reference.response = response.choices[0].message.content
+        # print(f">>>ASSISTANT:\n\t{reference.response}")
+        await message.reply(reference.response)  # Send the actual response instead of static message
+    except Exception as e:
+        print(f"Error: {e}")
+        await message.reply("Sorry, I encountered an error while processing your request.")
+
+dp.include_router(router)
+
+async def main():
+    await dp.start_polling(bot,skip_updates=False)
+
+if __name__ == '__main__':
+    asyncio.run(main())
