@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from together import Together
 import logging
+from aiohttp import web
 import asyncio
 from aiogram import Router
 
@@ -28,23 +29,23 @@ model_name = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
 
-async def handle(request):
+async def health_check(request):
     return web.Response(text="Bot is running")
+
+async def start_web():
+    app = web.Application()
+    app.add_routes([web.get('/', health_check)])
+    runner = web.AppRunner(app)
+    await runner.setup()
+    await web.TCPSite(runner, '0.0.0.0', int(os.getenv("PORT", 10000))).start()
 
 async def start_bot():
     await dp.start_polling(bot)
 
-async def start_web():
-    app = web.Application()
-    app.add_routes([web.get('/', handle)])
-    runner = web.AppRunner(app)
-    await runner.setup()
-    await web.TCPSite(runner, '0.0.0.0', int(os.getenv("PORT", 8000))).start()
-
 async def main():
     await asyncio.gather(
-        start_bot(),
-        start_web()
+        start_web(),
+        start_bot()
     )
 
 def clear_past():
