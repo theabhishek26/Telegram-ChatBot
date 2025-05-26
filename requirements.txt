@@ -1,3 +1,4 @@
 aiogram
-# togetherai
-# python-dotenv
+togetherai
+python-dotenv
+gunicorn
