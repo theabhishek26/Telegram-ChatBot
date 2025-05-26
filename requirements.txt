@@ -1,4 +1,4 @@
 aiogram
-togetherai
+togetherai>=0.2.0
 python-dotenv
 gunicorn
