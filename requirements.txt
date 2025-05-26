@@ -1,4 +1,4 @@
 aiogram
-togetherai>=0.2.0
+together>=0.2.0
 python-dotenv
-gunicorn
+gunicorn==21.2.0
