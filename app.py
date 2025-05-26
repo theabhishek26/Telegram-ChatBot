@@ -28,6 +28,25 @@ model_name = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
 
+async def handle(request):
+    return web.Response(text="Bot is running")
+
+async def start_bot():
+    await dp.start_polling(bot)
+
+async def start_web():
+    app = web.Application()
+    app.add_routes([web.get('/', handle)])
+    runner = web.AppRunner(app)
+    await runner.setup()
+    await web.TCPSite(runner, '0.0.0.0', int(os.getenv("PORT", 8000))).start()
+
+async def main():
+    await asyncio.gather(
+        start_bot(),
+        start_web()
+    )
+
 def clear_past():
     """
     This function clears the past conversation history.
