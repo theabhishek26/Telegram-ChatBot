@@ -10,6 +10,8 @@ from aiogram import Router
 from flask import Flask, request
 from telegram import Bot, Update
 from telegram.ext import Dispatcher, CommandHandler, CallbackContext
+from queue import Queue
+
 
 router = Router()
 client = Together() 
