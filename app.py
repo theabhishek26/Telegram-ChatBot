@@ -20,8 +20,7 @@ app = Flask(__name__)
 
 from telegram.ext import CallbackContext
 
-# Setup dispatcher
-dispatcher = Dispatcher(bot=bot, update_queue=None, use_context=True)
+
 
 class Reference:
     '''
@@ -36,6 +35,9 @@ model_name = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 # Initialize bot and dispatcher
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
 dp = Dispatcher()
+
+# Setup dispatcher
+dispatcher = Dispatcher(bot=bot, update_queue=None, use_context=True)
 
 async def health_check(request):
     return web.Response(text="Bot is running")
