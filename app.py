@@ -7,6 +7,7 @@ import logging
 from aiohttp import web
 import asyncio
 from aiogram import Router
+from flask import Flask, request
 
 router = Router()
 client = Together() 
@@ -14,6 +15,13 @@ client = Together()
 load_dotenv()
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+app = Flask(__name__)
+
+from telegram.ext import CallbackContext
+
+# Setup dispatcher
+dispatcher = Dispatcher(bot=bot, update_queue=None, use_context=True)
 
 class Reference:
     '''
@@ -98,6 +106,23 @@ async def chat(message: types.Message):
         await message.reply("Sorry, I encountered an error while processing your request.")
 
 dp.include_router(router)
+
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text("Hello! I'm your bot on Render.")
+
+dispatcher.add_handler(CommandHandler("start", start))
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    update = Update.de_json(request.get_json(force=True), bot)
+    dispatcher.process_update(update)
+    return "ok"
+
+
 
 async def main():
     await dp.start_polling(bot,skip_updates=False)
