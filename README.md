@@ -2,6 +2,8 @@
 
 A Python-based Telegram chatbot powered by Together AI's LLM (Llama 3 70B) with conversation memory and admin controls.
 
+Live link -  t.me/tech3252bot
+
 ![Python](https://img.shields.io/badge/Python-3.9+-blue)
 ![Aiogram](https://img.shields.io/badge/Aiogram-3.x-green)
 ![TogetherAI](https://img.shields.io/badge/Together_AI-API-orange)
