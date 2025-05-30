@@ -3,3 +3,4 @@ together>=0.2.0
 python-dotenv
 gunicorn==21.2.0
 aiohttp>=3.8.0
+Flask
