@@ -114,7 +114,7 @@ async def chat(message: types.Message):
         print(f"Error: {e}")
         await message.reply("Sorry, I encountered an error while processing your request.")
 
-dp.include_router(router)
+# dp.include_router(router)
 
 def start(update: Update, context: CallbackContext):
     update.message.reply_text("Hello! I'm your bot on Render.")
