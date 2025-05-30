@@ -11,6 +11,7 @@ from flask import Flask, request
 from telegram import Bot, Update
 from telegram.ext import Dispatcher, CommandHandler, CallbackContext
 from queue import Queue
+from telegram.ext import CommandHandler
 
 
 router = Router()
@@ -118,7 +119,10 @@ dp.include_router(router)
 def start(update: Update, context: CallbackContext):
     update.message.reply_text("Hello! I'm your bot on Render.")
 
-dispatcher.add_handler(CommandHandler("start", start))
+def start(update, context):
+    update.message.reply_text("Hello!")
+
+dp.add_handler(CommandHandler("start", start))
 
 @app.route('/')
 def home():
