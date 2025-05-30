@@ -34,12 +34,14 @@ class Reference:
 reference = Reference()
 model_name = "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
 
+update_queue = Queue()
+
 # Initialize bot and dispatcher
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
-dp = Dispatcher()
+# dp = Dispatcher()
 
 # Setup dispatcher
-dispatcher = Dispatcher(bot=bot, update_queue=None, use_context=True)
+dp = Dispatcher(bot=bot, update_queue=None, use_context=True)
 
 async def health_check(request):
     return web.Response(text="Bot is running")
